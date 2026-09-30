@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <script>document.documentElement.classList.add("js")</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HighUP Streaming — entretenimento premium com acesso rápido e compatível com seus dispositivos.">
+  <title>HighUP Streaming | Sua Casa com Tela de Cinema</title>
+  <style>
+    :root{
+      --bg:#050507;
+      --bg2:#0b0b10;
+      --card:#111118;
+      --card2:#16161f;
+      --text:#fff;
+      --muted:#a5a5b0;
+      --line:rgba(255,255,255,.09);
+      --accent:#ff174f;
+      --accent2:#ff4d72;
+      --max:1180px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);background:
+      radial-gradient(circle at 75% 5%,rgba(255,23,79,.13),transparent 28rem),
+      linear-gradient(180deg,#050507 0%,#07070a 45%,#050507 100%);
+      line-height:1.55;
+    }
+    a{text-decoration:none;color:inherit}
+    .container{width:min(var(--max),calc(100% - 36px));margin:auto}
+    header{
+      position:sticky;top:0;z-index:20;
+      backdrop-filter:blur(16px);
+      background:rgba(5,5,7,.78);
+      border-bottom:1px solid var(--line);
+    }
+    nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{font-weight:900;letter-spacing:-1px;font-size:22px}
+    .brand span{color:var(--accent)}
+    .navlinks{display:flex;gap:28px;color:#cfcfd5;font-size:14px}
+    .navlinks a:hover{color:#fff}
+    .nav-cta{
+      background:var(--accent);padding:11px 17px;border-radius:10px;
+      font-weight:800;font-size:13px;box-shadow:0 8px 28px rgba(255,23,79,.2)
+    }
+
+    .hero{padding:88px 0 55px;overflow:hidden}
+    .hero-grid{display:grid;grid-template-columns:1.03fr .97fr;align-items:center;gap:45px}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border:1px solid var(--line);
+      border-radius:999px;color:#ddd;font-size:12px;background:rgba(255,255,255,.03);margin-bottom:20px
+    }
+    .dot{width:7px;height:7px;border-radius:50%;background:#31e981;box-shadow:0 0 12px #31e981}
+    h1{font-size:clamp(46px,6vw,78px);line-height:.96;letter-spacing:-4px;max-width:720px}
+    h1 em{font-style:normal;color:var(--accent)}
+    .hero p{margin:23px 0 29px;color:var(--muted);font-size:18px;max-width:600px}
+    .buttons{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{padding:14px 20px;border-radius:11px;font-weight:800;font-size:14px}
+    .btn-primary{background:var(--accent)}
+    .btn-secondary{border:1px solid var(--line);background:rgba(255,255,255,.03)}
+    .visual{
+      min-height:390px;border:1px solid var(--line);border-radius:25px;padding:16px;
+      background:linear-gradient(145deg,#181820,#0c0c11);box-shadow:0 35px 90px rgba(0,0,0,.5);
+      transform:rotate(1deg)
+    }
+    .screen{height:100%;min-height:355px;border-radius:18px;overflow:hidden;position:relative;
+      background:
+        linear-gradient(180deg,transparent 35%,rgba(0,0,0,.85)),
+        radial-gradient(circle at 70% 35%,#893247 0,#29101b 35%,#09090d 72%);
+    }
+    .hero-image{width:100%;height:100%;min-height:355px;object-fit:cover;border-radius:18px;display:block}
+    .poster-art img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.95)}
+    .screen-content{position:absolute;left:25px;right:25px;bottom:24px}
+    .screen-label{font-size:11px;color:#ddd;text-transform:uppercase;letter-spacing:2px}
+    .screen-title{font-size:35px;font-weight:900;letter-spacing:-1px;margin:3px 0}
+    .screen-copy{font-size:12px;color:#bbb;max-width:300px}
+
+
+    /* ===== ANIMAÇÃO DO VISUAL ===== */
+    /* Ciclo total = 18s (3 slides x 6s). Para 4 slides: use 24s e delays 0/6/12/18s, e ajuste os keyframes (veja % abaixo). */
+    .visual{animation:float 7s ease-in-out infinite alternate;position:relative}
+    .visual:before{content:"";position:absolute;inset:-2px;border-radius:27px;z-index:-1;
+      background:linear-gradient(120deg,rgba(255,23,79,.55),transparent 40%,rgba(255,77,114,.4));filter:blur(22px);opacity:.45;animation:glow 4s ease-in-out infinite alternate}
+    .slides{position:relative;height:100%;min-height:355px;border-radius:18px;overflow:hidden;background:#0b0b10}
+    .slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;
+      animation:slidefade 18s infinite,slidezoom 18s infinite;will-change:opacity,transform}
+    .slide:nth-of-type(2){animation-delay:6s}
+    .slide:nth-of-type(3){animation-delay:12s}
+    .slides:after{content:"";position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.12) 50%,transparent 60%);
+      transform:translateX(-120%);animation:shine 6s ease-in-out infinite}
+    .slide-dots{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:7px;z-index:3}
+    .slide-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35);animation:dot 18s infinite}
+    .slide-dots i:nth-child(2){animation-delay:6s}
+    .slide-dots i:nth-child(3){animation-delay:12s}
+    /* uma imagem só */
+    .slides.solo .slide{opacity:1;animation:slidesolo 14s ease-in-out infinite alternate}
+    .slides.solo .slide-dots{display:none}
+    @keyframes slidefade{0%{opacity:0}6%{opacity:1}33%{opacity:1}39%{opacity:0}100%{opacity:0}}
+    @keyframes slidezoom{0%{transform:scale(1.02) translate(0,0)}39%{transform:scale(1.14) translate(-2%,-1.5%)}100%{transform:scale(1.14) translate(-2%,-1.5%)}}
+    @keyframes slidesolo{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.14) translate(-2%,-1.5%)}}
+    @keyframes dot{0%{background:rgba(255,255,255,.35)}6%,33%{background:var(--accent)}39%,100%{background:rgba(255,255,255,.35)}}
+    @keyframes shine{0%,55%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+    @keyframes float{from{transform:translateY(0) rotate(1deg)}to{transform:translateY(-12px) rotate(.4deg)}}
+    @keyframes glow{from{opacity:.3}to{opacity:.65}}
+    @media(prefers-reduced-motion:reduce){
+      .visual,.visual:before,.slides:after,.slide,.slide-dots i{animation:none!important}
+      .slide:first-of-type{opacity:1}
+    }
+    .poster-row{display:flex;gap:10px;overflow:hidden;padding:25px 0 5px}
+    .poster{
+      min-width:145px;height:205px;border-radius:13px;border:1px solid var(--line);
+      background:linear-gradient(145deg,#292933,#0d0d12);position:relative;overflow:hidden
+    }
+    .poster:nth-child(2){background:linear-gradient(145deg,#45300e,#12100b)}
+    .poster:nth-child(3){background:linear-gradient(145deg,#0d3845,#090d12)}
+    .poster:nth-child(4){background:linear-gradient(145deg,#3e1527,#0d0b10)}
+    .poster:nth-child(5){background:linear-gradient(145deg,#273e18,#090d0a)}
+    .poster span{position:absolute;left:13px;bottom:12px;font-weight:900;font-size:14px}
+
+    section{padding:85px 0}
+    .section-head{text-align:center;max-width:700px;margin:0 auto 44px}
+    .section-head h2{font-size:clamp(31px,4vw,48px);line-height:1.02;letter-spacing:-2px}
+    .section-head p{color:var(--muted);margin-top:14px}
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .feature{
+      padding:28px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.025)
+    }
+    .feature-img{width:100%;height:auto;display:block;border-radius:12px;margin-bottom:20px;border:1px solid var(--line)}
+    .feature h3{font-size:18px;margin-bottom:9px}
+    .feature p{color:var(--muted);font-size:14px}
+
+    .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+    .plan{
+      border:1px solid var(--line);background:linear-gradient(180deg,#111118,#0c0c11);
+      border-radius:20px;padding:28px;position:relative
+    }
+    .plan.featured{border-color:rgba(255,23,79,.55);box-shadow:0 20px 60px rgba(255,23,79,.08)}
+    .tag{position:absolute;right:18px;top:18px;background:var(--accent);font-size:10px;font-weight:900;padding:6px 9px;border-radius:7px}
+    .plan h3{font-size:21px}
+    .plan .desc{color:var(--muted);font-size:13px;margin:7px 0 22px}
+    .price{font-size:38px;font-weight:900;letter-spacing:-2px}
+    .price small{font-size:13px;color:var(--muted);letter-spacing:0}
+    .plan ul{list-style:none;margin:22px 0}
+    .plan li{padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px;color:#d9d9df}
+    .plan li::before{content:"✓";color:#43e38a;font-weight:900;margin-right:9px}
+    .plan .btn{display:block;text-align:center}
+
+    .catalog-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+    .cat-card{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);aspect-ratio:600/850;background:var(--card)}
+    .cat-slides{position:absolute;inset:0;overflow:hidden;background:#09090d}
+    .cat-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);animation:catfade 15s infinite ease-in-out}
+    .cat-slide:nth-child(1){animation-delay:0s}.cat-slide:nth-child(2){animation-delay:3s}.cat-slide:nth-child(3){animation-delay:6s}.cat-slide:nth-child(4){animation-delay:9s}.cat-slide:nth-child(5){animation-delay:12s}
+    .cat-card[data-slides="3"] .cat-slide{animation-duration:9s}.cat-card[data-slides="3"] .cat-slide:nth-child(1){animation-delay:0s}.cat-card[data-slides="3"] .cat-slide:nth-child(2){animation-delay:3s}.cat-card[data-slides="3"] .cat-slide:nth-child(3){animation-delay:6s}
+    .cat-card[data-slides="2"] .cat-slide{animation-duration:6s}.cat-card[data-slides="2"] .cat-slide:nth-child(1){animation-delay:0s}.cat-card[data-slides="2"] .cat-slide:nth-child(2){animation-delay:3s}
+    @keyframes catfade{0%,7%{opacity:0;transform:scale(1.04)}14%,45%{opacity:1;transform:scale(1.1)}53%,100%{opacity:0;transform:scale(1.14)}}
+    .cat-slides:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.04) 35%,rgba(0,0,0,.88));pointer-events:none}
+    .cat-dots{position:absolute;top:12px;left:12px;right:12px;display:flex;gap:4px;z-index:4}.cat-dots i{height:3px;flex:1;border-radius:9px;background:rgba(255,255,255,.28)}
+    .cat-info{z-index:5}
+    .cat-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+    .cat-card:hover img{transform:scale(1.05)}
+    .cat-info{position:absolute;left:16px;right:16px;bottom:16px}
+    .cat-info h3{font-size:19px;letter-spacing:-.5px}
+    .cat-info p{font-size:12px;color:#c9c9d1;margin-top:3px}
+    .benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .benefit{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.025);overflow:hidden}
+    .benefit img{width:100%;height:auto;display:block;border-bottom:1px solid var(--line)}
+    .benefit div{padding:18px 22px 24px}
+    .benefit h3{font-size:17px;margin-bottom:4px}
+    .benefit p{color:var(--muted);font-size:13px}
+    .faq{max-width:820px;margin:auto}
+    details{border-bottom:1px solid var(--line);padding:21px 0}
+    summary{cursor:pointer;font-weight:800;list-style:none;display:flex;justify-content:space-between}
+    summary::-webkit-details-marker{display:none}
+    summary::after{content:"+";color:var(--accent);font-size:22px}
+    details[open] summary::after{content:"−"}
+    details p{color:var(--muted);font-size:14px;padding:13px 30px 0 0}
+
+    .support{
+      border:1px solid var(--line);border-radius:22px;padding:38px;
+      background:linear-gradient(135deg,rgba(255,23,79,.11),rgba(255,255,255,.025));
+      display:flex;align-items:center;justify-content:space-between;gap:25px
+    }
+    .support h2{font-size:28px;letter-spacing:-1px}
+    .support p{color:var(--muted);margin-top:7px}
+    footer{border-top:1px solid var(--line);padding:32px 0;color:#85858f;font-size:12px}
+    .footer-row{display:flex;justify-content:space-between;gap:20px}
+    .footer-brand{font-weight:900;color:#ddd;font-size:16px}
+
+    @media(max-width:850px){
+      .navlinks{display:none}
+      .hero-grid{grid-template-columns:1fr}
+      .visual{transform:none;animation:none}
+      .features,.plans,.benefits{grid-template-columns:1fr}
+      .catalog-grid{grid-template-columns:repeat(3,1fr)}
+      .support,.footer-row{flex-direction:column;align-items:flex-start}
+      h1{letter-spacing:-2.5px}
+    }
+    @media(max-width:520px){
+      .container{width:min(var(--max),calc(100% - 24px))}
+      .hero{padding-top:58px}
+      .visual{min-height:300px}
+      .screen{min-height:268px}
+      .catalog-grid{grid-template-columns:repeat(2,1fr)}
+      section{padding:65px 0}
+    }
+
+    /* ===== VINHETA NO VISUAL =====
+       Ajuste a força: troque .55 / .95 (opacidade das bordas) e 70px / 18px (largura do esfumado). */
+    .slides:before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;
+      background:radial-gradient(ellipse at 50% 48%,transparent 46%,rgba(5,5,7,.55) 76%,rgba(5,5,7,.95) 100%);
+      box-shadow:inset 0 0 70px 18px rgba(5,5,7,.9),inset 0 0 0 1px rgba(255,255,255,.06)}
+    .slides:after{z-index:2}
+
+    /* ===== ANIMAÇÕES AO ROLAR A PÁGINA ===== */
+    .scroll-progress{position:fixed;top:0;left:0;width:100%;height:3px;z-index:50;transform-origin:0 50%;transform:scaleX(0);
+      background:linear-gradient(90deg,var(--accent),var(--accent2));pointer-events:none}
+    header{transition:background .3s,box-shadow .3s}
+    nav{transition:height .3s}
+    header.scrolled{background:rgba(5,5,7,.94);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    header.scrolled nav{height:60px}
+    .js .reveal{opacity:0;transform:translate3d(0,34px,0);
+      transition:opacity .9s cubic-bezier(.2,.7,.2,1) var(--d,0s),transform .9s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+    .js .reveal.r-left{transform:translate3d(-42px,0,0)}
+    .js .reveal.r-right{transform:translate3d(42px,0,0)}
+    .js .reveal.r-zoom{transform:scale(.92)}
+    .js .reveal.in{opacity:1;transform:none}
+    .js .reveal.done{transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
+    .js .reveal.done.lift:hover{transform:translateY(-6px)}
+    .feature.lift:hover,.benefit.lift:hover,.plan.lift:hover{border-color:rgba(255,23,79,.45)}
+    @media(prefers-reduced-motion:reduce){
+      .js .reveal{opacity:1;transform:none;transition:none}
+      .scroll-progress{display:none}
+      .cat-slide{animation:none!important}.cat-slide:first-child{opacity:1;transform:none}
+    }
+  </style>
+</head>
+<body>
+
+<div class="scroll-progress" aria-hidden="true"></div>
+
+<header>
+  <div class="container">
+    <nav>
+      <a href="#" class="brand">HighUP <span>Streaming</span></a>
+      <div class="navlinks">
+        <a href="#catalogo">Catálogo</a>
+        <a href="#experiencia">Experiência</a>
+        <a href="#planos">Planos</a>
+        <a href="#faq">Suporte</a>
+      </div>
+      <a href="https://wa.me/5588997203790?text=Ol%C3%A1%2C%20gostaria%20de%20assinar%20o%20servi%C3%A7o%20HighUp.%20Como%20posso%20prosseguir%3F" class="nav-cta" target="_blank" rel="noopener">Teste Premium</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow"><span class="dot"></span> Seu entretenimento, sem limites</div>
+        <h1>Sua casa com <em>tela de cinema.</em></h1>
+        <p>Filmes, séries, esportes e muito mais. Tudo em um só lugar, com acesso rápido e qualidade nos seus dispositivos compatíveis.</p>
+        <div class="buttons">
+          <a class="btn btn-primary" href="#planos">Conhecer os planos</a>
+          <a class="btn btn-secondary" href="https://wa.me/5588997203790?text=Ol%C3%A1%2C%20gostaria%20de%20assinar%20o%20servi%C3%A7o%20HighUp.
+          %20Como%20posso%20prosseguir%3F" target="_blank" rel="noopener">Falar com especialista</a>
+        </div>
+      </div>
+      <div class="visual">
+        <!-- VISUAL ANIMADO
+             • Para TROCAR as imagens: altere o src de cada <img class="slide"> abaixo.
+             • Para usar UMA imagem só (com zoom suave): adicione a classe "solo" em <div class="slides"> e apague as outras duas <img>.
+             • Para ter mais slides: copie uma <img class="slide"> e ajuste o tempo no CSS (veja "ANIMAÇÃO DO VISUAL"). -->
+        <div class="slides">
+          <img class="slide" src="imagens_highup/highup-visual.jpg" alt="HighUP Streaming — entretenimento em múltiplos dispositivos">
+          <img class="slide" src="imagens_highup/highup-visual2.jpg" alt="Filmes">
+          <img class="slide" src="imagens_highup/highup-visual3.png" alt="Esportes">
+          <div class="slide-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <section id="catalogo">
+    <div class="container">
+      <div class="section-head">
+        <h2>Tudo o que você ama, <span style="color:var(--accent)">em um só lugar.</span></h2>
+        <p>Explore categorias para todos os gostos, do cinema à natureza.</p>
+      </div>
+      <div class="catalog-grid">
+        <article class="cat-card" data-slides="5">
+          <div class="cat-slides" aria-label="Carrossel de Filmes">
+            <img class="cat-slide" src="imagens_highup/filmes-1.jpg" alt="" loading="lazy">
+            <img class="cat-slide" src="imagens_highup/filmes-2.jpg" alt="" loading="lazy">
+            <img class="cat-slide" src="imagens_highup/filmes-3.jpg" alt="" loading="lazy">
+            <img class="cat-slide" src="imagens_highup/filmes-4.jpg" alt="" loading="lazy">
+            <img class="cat-slide" src="imagens_highup/filmes-5.jpg" alt="" loading="lazy">
+            <div class="cat-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="cat-info"><h3>Filmes</h3><p>Histórias para todos os estilos, do drama à aventura.</p></div>
+        </article>
+        <article class="cat-card" data-slides="5">
+          <div class="cat-slides" aria-label="Carrossel de Séries">
+            <img class="cat-slide" src="imagens_highup/series-1.jpg" alt="" loading="lazy">
+            <img class="cat-slide" src="imagens_highup/series-2.jpg" alt="" loading="lazy">
+            <img class="cat-slide" src="imagens_highup/series-3.jpg" alt="" loading="lazy">
+            <img class="cat-slide" src="imagens_highup/series-4.jpg" alt="" loading="lazy">
+            <img class="cat-slide" src="imagens_highup/series-5.jpg" alt="" loading="lazy">
+            <div class="cat-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="cat-info"><h3>Séries</h3><p>Maratone do primeiro ao último episódio.</p></div>
+        </article>
+        <article class="cat-card" data-slides="3">
+          <div class="cat-slides" aria-label="Carrossel de Esportes">
+            <img class="cat-slide" src="imagens_highup/esportes-1.jpg" alt="" loading="lazy">
+            <img class="cat-slide" src="imagens_highup/esportes-2.jpg" alt="" loading="lazy">
+            <img class="cat-slide" src="imagens_highup/esportes-3.jpg" alt="" loading="lazy">
+            <div class="cat-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+          </div>
+          <div class="cat-info"><h3>Esportes</h3><p>Acompanhe a emoção dos jogos de onde estiver.</p></div>
+        </article>
+        <article class="cat-card" data-slides="3">
+          <div class="cat-slides" aria-label="Carrossel de Canais">
+            <img class="cat-slide" src="imagens_highup/canais-1.jpg" alt="" loading="lazy">
+            <img class="cat-slide" src="imagens_highup/canais-2.jpg" alt="" loading="lazy">
+            <img class="cat-slide" src="imagens_highup/canais-3.jpg" alt="" loading="lazy">
+            <div class="cat-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+          </div>
+          <div class="cat-info"><h3>Canais</h3><p>Programação ao vivo para toda a família.</p></div>
+        </article>
+        <article class="cat-card" data-slides="2">
+          <div class="cat-slides" aria-label="Carrossel de Documentários">
+            <img class="cat-slide" src="imagens_highup/documentarios-1.jpg" alt="" loading="lazy">
+            <img class="cat-slide" src="imagens_highup/documentarios-2.png" alt="" loading="lazy">
+            <div class="cat-dots" aria-hidden="true"><i></i><i></i></div>
+          </div>
+          <div class="cat-info"><h3>Documentários</h3><p>Curiosidade, natureza e conhecimento em cada tela.</p></div>
+        </article>
+      </div>
+      <p style="color:#70707a;font-size:11px;text-align:center;margin-top:15px">Imagens ilustrativas. A disponibilidade de conteúdos pode variar.</p>
+    </div>
+  </section>
+
+  <section id="experiencia">
+    <div class="container">
+      <div class="section-head">
+        <h2>Uma experiência feita para você.</h2>
+        <p>Da conexão ao dispositivo, cada detalhe foi pensado para deixar seu entretenimento mais simples e confortável.</p>
+      </div>
+      <div class="features">
+        <article class="feature">
+          <img class="feature-img" src="imagens_highup/feature-acesso-rapido.svg" alt="Acesso rápido" loading="lazy">
+          <h3>Acesso rápido</h3>
+          <p>Tenha seus dados de acesso de forma prática e aproveite o serviço sem complicação.</p>
+        </article>
+        <article class="feature">
+          <img class="feature-img" src="imagens_highup/feature-alta-qualidade.svg" alt="Alta qualidade" loading="lazy">
+          <h3>Alta qualidade</h3>
+          <p>Experiência visual preparada para telas modernas, com qualidade adaptada à sua conexão.</p>
+        </article>
+        <article class="feature">
+          <img class="feature-img" src="imagens_highup/feature-compatibilidade.svg" alt="Compatibilidade" loading="lazy">
+          <h3>Compatibilidade</h3>
+          <p>Use em dispositivos compatíveis como Smart TVs, smartphones, tablets, computadores e TV Box.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="vantagens">
+    <div class="container">
+      <div class="section-head">
+        <h2>Vantagens que <span style="color:var(--accent)">fazem a diferença.</span></h2>
+        <p>Por que escolher a HighUP.</p>
+      </div>
+      <div class="benefits">
+        <div class="benefit"><img src="imagens_highup/vantagem-qualidade.svg" alt="Qualidade de imagem" loading="lazy"><div><h3>Qualidade de imagem</h3><p>HD e 4K adaptativo*</p></div></div>
+        <div class="benefit"><img src="imagens_highup/vantagem-dispositivos.svg" alt="Vários dispositivos" loading="lazy"><div><h3>Vários dispositivos</h3><p>Smart TV, celular, tablet, PC e TV Box</p></div></div>
+        <div class="benefit"><img src="imagens_highup/vantagem-sem-fidelidade.svg" alt="Sem fidelidade" loading="lazy"><div><h3>Sem fidelidade</h3><p>Cancele quando quiser</p></div></div>
+        <div class="benefit"><img src="imagens_highup/vantagem-suporte.svg" alt="Suporte rápido" loading="lazy"><div><h3>Suporte rápido</h3><p>Atendimento humanizado</p></div></div>
+        <div class="benefit"><img src="imagens_highup/vantagem-atualizacoes.svg" alt="Atualizações constantes" loading="lazy"><div><h3>Atualizações constantes</h3><p>Melhorias contínuas no serviço</p></div></div>
+        <div class="benefit"><img src="imagens_highup/vantagem-interface.svg" alt="Interface simples" loading="lazy"><div><h3>Interface simples</h3><p>Fácil de usar no dia a dia</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="planos">
+    <div class="container">
+      <div class="section-head">
+        <h2>Escolha seu acesso.</h2>
+        <p>Planos simples, sem fidelidade. Escolha a opção que combina com sua rotina.</p>
+      </div>
+      <div class="plans">
+        <article class="plan">
+          <h3>Mensal</h3>
+          <p class="desc">Para quem quer praticidade e economia.</p>
+          <div class="price">R$ 37,00 <small>/mês</small></div>
+          <ul>
+            <li>Qualidade HD</li>
+            <li>Acesso individual</li>
+            <li>Suporte básico</li>
+            <li>Ativação prática</li>
+          </ul>
+          <a href="https://wa.me/5588997203790?text=Ol%C3%A1%2C%20gostaria%20de%20assinar%20o%20servi%C3%A7o%20HighUp.%20Como%20posso%20prosseguir%3F" class="btn btn-secondary" target="_blank" rel="noopener">Assinar agora</a>
+        </article>
+
+        <article class="plan featured">
+          <div class="tag">MAIS ESCOLHIDO</div>
+          <h3>Trimensal</h3>
+          <p class="desc">Três meses de assinatura e renovação automática.</p>
+          <div class="price">R$ 33,00 <small>/mês</small></div>
+          <ul>
+            <li>Qualidade adaptativa</li>
+            <li>Acesso individual</li>
+            <li>Experiência otimizada</li>
+            <li>Suporte prioritário</li>
+          </ul>
+          <a href="https://wa.me/5588997203790?text=Ol%C3%A1%2C%20gostaria%20de%20assinar%20o%20servi%C3%A7o%20HighUp.%20Como%20posso%20prosseguir%3F" class="btn btn-primary" target="_blank" rel="noopener">Assinar agora</a>
+        </article>
+
+        <article class="plan">
+          <h3>Anual</h3>
+          <p class="desc">Um ano inteiro de assinatura garantida!</p>
+          <div class="price">R$ 27,00 <small>/mês</small></div>
+          <ul>
+            <li>Qualidade 4K adaptativa*</li>
+            <li>Até 2 telas simultâneas*</li>
+            <li>Experiência otimizada</li>
+            <li>Suporte prioritário</li>
+          </ul>
+          <a href="https://wa.me/5588997203790?text=Ol%C3%A1%2C%20gostaria%20de%20assinar%20o%20servi%C3%A7o%20HighUp.%20Como%20posso%20prosseguir%3F" class="btn btn-secondary" target="_blank" rel="noopener">Assinar agora</a>
+        </article>
+      </div>
+      <p style="color:#70707a;font-size:11px;text-align:center;margin-top:15px">*Recursos sujeitos à compatibilidade do dispositivo, conexão e disponibilidade do serviço.</p>
+    </div>
+  </section>
+
+  <section id="suporte">
+    <div class="container">
+      <div class="support">
+        <div>
+          <h2>Precisa de ajuda?</h2>
+          <p>Fale com a equipe HighUP e tire suas dúvidas sobre planos e compatibilidade.</p>
+        </div>
+        <a href="https://wa.me/5588997203790?text=Preciso%20de%20suporte%20no%20servi%C3%A7o%20HighUp." class="btn btn-primary" target="_blank" rel="noopener">Falar com suporte</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="container">
+      <div class="section-head">
+        <h2>Perguntas frequentes.</h2>
+        <p>Informações rápidas antes de escolher seu plano.</p>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>Qual internet é recomendada?</summary>
+          <p>Uma conexão estável é mais importante do que apenas a velocidade máxima. Para conteúdos em maior resolução, recomenda-se uma conexão de fibra ou equivalente.</p>
+        </details>
+        <details>
+          <summary>Em quais dispositivos posso usar?</summary>
+          <p>A compatibilidade depende do aplicativo ou método de acesso disponibilizado pelo serviço. Consulte o suporte para confirmar seu aparelho.</p>
+        </details>
+        <details>
+          <summary>Como recebo meu acesso?</summary>
+          <p>Após a confirmação da contratação, as instruções de acesso são enviadas pelo canal de atendimento informado no momento da compra.</p>
+        </details>
+        <details>
+          <summary>Posso cancelar?</summary>
+          <p>Consulte as condições do plano escolhido e o procedimento de cancelamento informado no momento da contratação.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footer-row">
+    <div>
+      <div class="footer-brand">HighUP Streaming</div>
+      <div>Entretenimento do seu jeito.</div>
+    </div>
+    <div>© 2026 HighUP Streaming. Todos os direitos reservados.</div>
+  </div>
+</footer>
+
+
+<script>
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Quais elementos animam ao rolar, e de que jeito.
+     Formato: ['seletor', 'efeito', levanta-no-hover?]
+     Efeitos: '' (sobe), 'r-left' (vem da esquerda), 'r-right' (da direita), 'r-zoom' (cresce). */
+  var alvos = [
+    ['.hero-grid > div:first-child > *', '', false],
+    ['.section-head', '', false],
+    ['.cat-card', 'r-zoom', true],
+    ['.feature', '', true],
+    ['.benefit', '', true],
+    ['.plan', '', true],
+    ['.support', 'r-zoom', false],
+    ['details', 'r-left', false],
+    ['.footer-row', '', false]
+  ];
+
+  var itens = [];
+  alvos.forEach(function(a){
+    var pais = new Map();
+    document.querySelectorAll(a[0]).forEach(function(el){
+      var pai = el.parentElement, i = pais.get(pai) || 0;
+      pais.set(pai, i + 1);
+      el.classList.add('reveal');
+      if (a[1]) el.classList.add(a[1]);
+      if (a[2]) el.classList.add('lift');
+      el.style.setProperty('--d', Math.min(i * 0.11, 0.55) + 's');
+      itens.push(el);
+    });
+  });
+
+  if (reduce || !('IntersectionObserver' in window)) {
+    itens.forEach(function(el){ el.classList.add('in','done'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        var el = e.target;
+        el.classList.add('in');
+        io.unobserve(el);
+        var d = (parseFloat(el.style.getPropertyValue('--d')) || 0) * 1000;
+        setTimeout(function(){ el.classList.add('done'); }, d + 950);
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+    itens.forEach(function(el){ io.observe(el); });
+  }
+
+  /* barra de progresso + cabeçalho que encolhe */
+  var barra = document.querySelector('.scroll-progress');
+  var header = document.querySelector('header');
+  var ticking = false;
+  function atualizar(){
+    var max = document.documentElement.scrollHeight - innerHeight;
+    if (barra) barra.style.transform = 'scaleX(' + (max > 0 ? Math.min(scrollY / max, 1) : 0) + ')';
+    if (header) header.classList.toggle('scrolled', scrollY > 30);
+    ticking = false;
+  }
+  addEventListener('scroll', function(){
+    if (!ticking) { ticking = true; requestAnimationFrame(atualizar); }
+  }, { passive: true });
+  atualizar();
+})();
+</script>
+</body>
+</html>
